@@ -1,10 +1,10 @@
 ﻿@model ProductModel
 @{
-    ViewData["title"] = "Add product";
+    ViewData["title"] = "Edit product";
 }
-<h4>Add Product</h4>
+<h4>Edit Product</h4>
 <div>
-    <form asp-action="Add" enctype="multipart/form-data">
+    <form asp-action="Edit" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label>Name</label>
@@ -41,11 +41,11 @@
             <label>Image</label>
             <input asp-for="ImageUpload" class="form-control" />
             <span asp-validation-for="ImageUpload" class="text-danger" />
-            <img id="imgpreview" class="pt-2"/>
+            <img src="~/media/products/@Model.Image" width="100" height="80" />
         </div>
 
         <div class="form-group">
-            <button class="btn btn-primary">Add</button>
+            <button class="btn btn-primary">Update</button>
         </div>
     </form>
     <a asp-action="Index">Back to list product</a>
@@ -56,11 +56,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-    <script>
-        $("#ImageUpload").change(function(){
-            readURL(this);
-        })
-    </script>
     <script>
         CKEDITOR.replace('Description');
     </script>
