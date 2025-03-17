@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WebSiteBanMoHinh.Models;
 using WebSiteBanMoHinh.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +18,32 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddIdentity<AppUserModel, IdentityRole>()
+    .AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();// DbContext
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings.
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 5;
+    //options.Password.RequiredUniqueChars = 1;
+
+    // Lockout settings.
+   
+
+    // User settings.
+    
+    options.User.RequireUniqueEmail = true;
+});
+
 var app = builder.Build();
 
+app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
 app.UseSession();
 
 // Configure the HTTP request pipeline.
@@ -29,6 +55,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -42,6 +42,7 @@
             <input asp-for="ImageUpload" class="form-control" />
             <span asp-validation-for="ImageUpload" class="text-danger" />
             <img src="~/media/products/@Model.Image" width="100" height="80" />
+            @* <img id="imgpreview" class="pt-2" /> *@
         </div>
 
         <div class="form-group">
@@ -56,6 +57,11 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        $("#ImageUpload").change(function(){
+            readURL(this);
+        })
+    </script>
     <script>
         CKEDITOR.replace('Description');
     </script>

@@ -26,7 +26,7 @@ namespace WebSiteBanMoHinh.Controllers
         {
             return View("~/Views/Checkout/Index.cshtml");
         }
-        public async Task<IActionResult> Add(int Id)
+        public async Task<IActionResult> Add(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
             List<CartItemModel> cart = HttpContext.Session.GetJSon<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
@@ -44,7 +44,7 @@ namespace WebSiteBanMoHinh.Controllers
             TempData["success"] = "Add Item to cart successfully";
             return Redirect(Request.Headers["Referer"].ToString());
         }
-        public async Task<IActionResult> Decrease(int Id)
+        public async Task<IActionResult> Decrease(long Id)
         {
             List<CartItemModel> cart = HttpContext.Session.GetJSon<List<CartItemModel>>("Cart");
             CartItemModel cartItem = cart.Where(c => c.ProductId == Id).FirstOrDefault();
@@ -68,7 +68,7 @@ namespace WebSiteBanMoHinh.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Increase(int Id)
+        public async Task<IActionResult> Increase(long Id)
         {
             List<CartItemModel> cart = HttpContext.Session.GetJSon<List<CartItemModel>>("Cart");
             CartItemModel cartItem = cart.Where(c => c.ProductId == Id).FirstOrDefault();
@@ -92,7 +92,7 @@ namespace WebSiteBanMoHinh.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Remove(int Id)
+        public async Task<IActionResult> Remove(long Id)
         {
             List<CartItemModel> cart = HttpContext.Session.GetJSon<List<CartItemModel>>("Cart");
             cart.RemoveAll(p => p.ProductId == Id);
