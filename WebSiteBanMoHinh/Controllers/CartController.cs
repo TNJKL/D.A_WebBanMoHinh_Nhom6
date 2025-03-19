@@ -27,6 +27,8 @@ namespace WebSiteBanMoHinh.Controllers
         {
             return View("~/Views/Checkout/Index.cshtml");
         }
+      
+        
         public async Task<IActionResult> Add(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);

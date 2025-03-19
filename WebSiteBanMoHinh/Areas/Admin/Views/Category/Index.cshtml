@@ -11,7 +11,7 @@
 }
 <h3>List Category</h3>
 <a asp-action="Add" asp-controller="Category">Add Category</a>
-<table class="table">
+<table class="table" id="myTable">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -20,6 +20,7 @@
 
             <th scope="col">Category Slug</th>
             <th scope="col">Category Status</th>
+            <th scope="col">Action</th>
 
 
         </tr>
@@ -55,4 +56,5 @@
 
     </tbody>
 </table>
+
 <partial name="_paging" model="@pager" />

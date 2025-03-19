@@ -33,6 +33,7 @@ namespace WebSiteBanMoHinh.Models
 
         public string Image { get; set; } 
 
+        public  RatingModel Ratings { get; set; }
         [NotMapped]
         [FileExtension]
         public IFormFile? ImageUpload { get; set; }
