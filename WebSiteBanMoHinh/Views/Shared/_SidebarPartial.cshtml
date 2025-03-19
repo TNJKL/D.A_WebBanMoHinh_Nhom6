@@ -1,12 +1,14 @@
-﻿<div class="left-sidebar">
-	<h2>Category</h2>
+﻿@using WebSiteBanMoHinh.Resources;
+@inject LanguageService ShareLocallizer
+<div class="left-sidebar">
+	<h2>@ShareLocallizer.GetLocalizedHTML("Category")</h2>
 	<div class="panel-group category-products" id="accordian">
 		<!--category-productsr-->
 		
 		<vc:categories></vc:categories>
 		
 	</div><!--/category-products-->
-	<h2>Brand</h2>
+	<h2>@ShareLocallizer.GetLocalizedHTML("Category")</h2>
 	<div class="panel-group category-products" id="accordian">
 		
 		<vc:brands></vc:brands>

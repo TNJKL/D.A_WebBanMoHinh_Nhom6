@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WebSiteBanMoHinh.Areas.Admin.Repository;
 using WebSiteBanMoHinh.Models;
 using WebSiteBanMoHinh.Models.ViewModels;
 
@@ -10,11 +11,13 @@ namespace WebSiteBanMoHinh.Controllers
     {
         private UserManager<AppUserModel> _userManager;
         private SignInManager<AppUserModel> _signInManager;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(SignInManager<AppUserModel> signInManager , UserManager<AppUserModel> userManager)
+        public AccountController(IEmailSender emailSender, SignInManager<AppUserModel> signInManager , UserManager<AppUserModel> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _emailSender = emailSender;
             
         }
 
@@ -24,6 +27,7 @@ namespace WebSiteBanMoHinh.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginVM) 
         {
             if (ModelState.IsValid)

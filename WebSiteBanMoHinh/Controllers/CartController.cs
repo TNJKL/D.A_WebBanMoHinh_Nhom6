@@ -3,6 +3,7 @@ using WebSiteBanMoHinh.Models;
 using WebSiteBanMoHinh.Models.ViewModels;
 using WebSiteBanMoHinh.Repository;
 
+
 namespace WebSiteBanMoHinh.Controllers
 {
     public class CartController : Controller
@@ -40,7 +41,7 @@ namespace WebSiteBanMoHinh.Controllers
                 cartItems.Quantity += 1;
             }
             HttpContext.Session.SetJson("Cart", cart);
-
+            
             TempData["success"] = "Add Item to cart successfully";
             return Redirect(Request.Headers["Referer"].ToString());
         }

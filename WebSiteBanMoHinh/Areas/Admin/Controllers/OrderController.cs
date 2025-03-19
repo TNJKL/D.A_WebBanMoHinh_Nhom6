@@ -21,8 +21,10 @@ namespace WebSiteBanMoHinh.Areas.Admin.Controllers
         }
         public async Task<IActionResult> ViewOrder(string orderCode)
         {
-            var DetailsOrder = await _dataContext.OrderDetails.Include(o => o.Product).Where(o => o.OrderCode ==  orderCode).ToListAsync();
+            var DetailsOrder = await _dataContext.OrderDetails.Include(o => o.Product).Where(o => o.OrderCode == orderCode).ToListAsync();
             return View(DetailsOrder);
         }
+
+
     }
 }
