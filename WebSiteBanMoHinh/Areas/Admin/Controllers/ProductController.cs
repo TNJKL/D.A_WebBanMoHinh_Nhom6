@@ -162,7 +162,7 @@ namespace WebSiteBanMoHinh.Areas.Admin.Controllers
             return View(product);
         }
 
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
             if (!string.Equals(product.Image, "noname.jpg"))
@@ -183,9 +183,37 @@ namespace WebSiteBanMoHinh.Areas.Admin.Controllers
             }
             _dataContext.Products.Remove(product);
             await _dataContext.SaveChangesAsync();
-            TempData["error"] = "Sản phẩm đã xóa";
+            TempData["success"] = "Đã xóa sản phẩm";
             return RedirectToAction("Index");
         }
-
+        public async Task<IActionResult> AddQuantity(int Id)
+        {
+            ViewBag.Id = Id;
+            return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult StoreProductQuantity(ProductQuantityModel productQuantityModel)
+        {
+            // Get the product to update
+            var product = _dataContext.Products.Find(productQuantityModel.ProductId);
+
+            if (product == null)
+            {
+                return NotFound(); // Handle product not found scenario
+            }
+            product.Quantity += productQuantityModel.Quantity;
+
+            productQuantityModel.Quantity = productQuantityModel.Quantity;
+            productQuantityModel.ProductId = productQuantityModel.ProductId;
+            productQuantityModel.DateCreate = DateTime.Now;
+
+
+            _dataContext.Add(productQuantityModel);
+            _dataContext.SaveChangesAsync();
+            TempData["success"] = "Thêm số lượng sản phẩm thành công";
+            return RedirectToAction("AddQuantity", "Product", new { Id = productQuantityModel.ProductId });
+        }
+    }
 }

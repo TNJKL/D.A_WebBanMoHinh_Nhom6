@@ -24,9 +24,10 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\backend\css\" />
     <Folder Include="wwwroot\backend\images\" />
+    <Folder Include="wwwroot\media\logos\" />
+    <Folder Include="wwwroot\media\sliders\" />
     <Folder Include="wwwroot\media\products\" />
   </ItemGroup>
 

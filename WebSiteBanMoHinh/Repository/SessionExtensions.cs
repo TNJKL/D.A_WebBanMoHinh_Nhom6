@@ -13,5 +13,7 @@ namespace WebSiteBanMoHinh.Repository
             var sessionData = session.GetString(key);
             return sessionData == null ? default(T) : JsonConvert.DeserializeObject<T>(sessionData);
         }
+
+
     }
 }

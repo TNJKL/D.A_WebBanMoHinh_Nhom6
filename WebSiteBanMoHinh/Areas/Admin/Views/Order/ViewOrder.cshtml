@@ -56,6 +56,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                    <td></td>
                
                 <td>Tổng : @total.ToString("#,##0 đ")</td>
                     
@@ -66,13 +67,14 @@
                   
                     <option value="1">Đơn hàng mới</option>
                             <option value="0">Đã xử lý</option>
-                        
 
+                                
                     </select>
                         }
                 </td>
             </tr>
         </tbody>
+            <a asp-action="Index">Back to list Orders</a>
     </table>
    
     </div>
@@ -80,6 +82,7 @@
 
 </html>
 @section Scripts{
+    
     <script>
         new DataTable('#detail_order', {
             layout: {
