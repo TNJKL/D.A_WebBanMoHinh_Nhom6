@@ -1,8 +1,10 @@
 ﻿@model ProductQuantityModel
 @{
     ViewData["title"] = "Add quantity";
+    var total_quantities = 0;
+    var key = 1;
 }
-<h4>Create Brand</h4>
+<h4>Add Quantity Product</h4>
 <div>
     <form asp-action="StoreProductQuantity" asp-asp-controller="Product" enctype="multipart/form-data">
         <input type="hidden" name="ProductId" value="@ViewBag.Id" />
@@ -17,6 +19,35 @@
             <button class="btn btn-primary">Add</button>
         </div>
     </form>
+    <h3>Existing Product Quantities:</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Quantity added</th>
+
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productQuantity in ViewBag.ProductByQuantity)
+
+            {
+
+                total_quantities += productQuantity.Quantity;
+                <tr>
+                    <td>@key</td>
+                    <td>@productQuantity.Quantity</td>
+
+                    <td>@productQuantity.DateCreate</td>
+                </tr>
+                key++;
+            }
+            <tr>
+                <td>Total Quantities : @total_quantities</td>
+            </tr>
+        </tbody>
+    </table>
     <a asp-asp-controller="Product" asp-action="Index">Back to list products</a>
 </div>
 

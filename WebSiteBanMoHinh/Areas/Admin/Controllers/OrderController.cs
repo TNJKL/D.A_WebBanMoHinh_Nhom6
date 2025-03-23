@@ -26,6 +26,8 @@ namespace WebSiteBanMoHinh.Areas.Admin.Controllers
             //return View(DetailsOrder);
             var DetailsOrder = await _dataContext.OrderDetails.Include(od => od.Product)
                .Where(od => od.OrderCode == orderCode).ToListAsync();
+            var ShippingCost = _dataContext.Orders.Where(o => o.OrderCode == orderCode).First();
+            ViewBag.ShippingCost = ShippingCost.ShippingCost;
 
             var Order = _dataContext.Orders.Where(o => o.OrderCode == orderCode).First();
 

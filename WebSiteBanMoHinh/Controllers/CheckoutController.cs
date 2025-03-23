@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using WebSiteBanMoHinh.Areas.Admin.Repository;
 using WebSiteBanMoHinh.Models;
@@ -68,13 +70,26 @@ namespace WebSiteBanMoHinh.Controllers
             else
             {
                 var orderCode = Guid.NewGuid().ToString();
+                var shippingPriceCookie = Request.Cookies["ShippingPrice"];
+                decimal shippingPrice = 0;
+                //nhan coupon code
+                var coupon_code = Request.Cookies["CouponTitle"];
+
+                if (shippingPriceCookie != null)
+                {
+                    var shippingPriceJson = shippingPriceCookie;
+                    shippingPrice = JsonConvert.DeserializeObject<decimal>(shippingPriceJson);
+                }
                 var orderItem = new OrderModel
                 {
                     OrderCode = orderCode,
+                    ShippingCost = shippingPrice,
+                    CouponCode = coupon_code,
                     UserName = userEmail,
                     Status = 1,
                     CreatedDate = DateTime.Now
                 };
+
                 _dataContext.Add(orderItem);
                 _dataContext.SaveChanges();
 
@@ -92,6 +107,13 @@ namespace WebSiteBanMoHinh.Controllers
                         Price = cart.Price,
                         Quantity = cart.Quantity
                     };
+                    //
+                    var product = await _dataContext.Products.Where(p => p.Id == cart.ProductId).FirstAsync();
+                    product.Quantity -= cart.Quantity;
+                    product.Sold += cart.Quantity;
+                    _dataContext.Update(product);
+
+                    //
                     orderDetailsList.Add(orderDetails);
                     _dataContext.Add(orderDetails);
                     _dataContext.SaveChanges();
@@ -103,6 +125,7 @@ namespace WebSiteBanMoHinh.Controllers
                 HttpContext.Session.Remove("Cart");
 
                 // Tạo nội dung email với danh sách sản phẩm
+                //var baseUrl = $"{Request.Scheme}://{Request.Host}";
                 var emailBody = $@"
     <!DOCTYPE html>
     <html>
@@ -133,6 +156,8 @@ namespace WebSiteBanMoHinh.Controllers
                         emailBody += $@"
                 <tr style='border-bottom:1px solid #ddd;'>
                     <td style='padding:10px;'>{product.Name}</td>
+
+      
                     <td style='padding:10px; text-align:right;'>{item.Price:C}</td>
                     <td style='padding:10px; text-align:center;'>{item.Quantity}</td>
                     <td style='padding:10px; text-align:right;'>{(item.Price * item.Quantity):C}</td>
@@ -148,15 +173,15 @@ namespace WebSiteBanMoHinh.Controllers
     </body>
     </html>";
 
-               
+
 
                 var receiver = userEmail;
                 var subject = "Xác nhận đơn hàng thành công";
 
-                 await _emailSender.SendEmailAsync(receiver, subject, emailBody , true);
+                await _emailSender.SendEmailAsync(receiver, subject, emailBody, true);
 
                 TempData["success"] = "Checkout thành công, vui lòng chờ duyệt đơn hàng!";
-                return RedirectToAction("Index", "Cart");
+                return RedirectToAction("History", "Account");
             }
         }
 

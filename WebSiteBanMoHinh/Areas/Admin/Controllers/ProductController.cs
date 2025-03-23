@@ -188,6 +188,8 @@ namespace WebSiteBanMoHinh.Areas.Admin.Controllers
         }
         public async Task<IActionResult> AddQuantity(int Id)
         {
+            var productByQuantity = await _dataContext.ProductQuantities.Where(pq => pq.ProductId == Id).ToListAsync();
+            ViewBag.ProductByQuantity = productByQuantity;
             ViewBag.Id = Id;
             return View();
         }

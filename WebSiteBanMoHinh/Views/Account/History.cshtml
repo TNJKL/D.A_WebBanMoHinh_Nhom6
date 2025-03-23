@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<OrderModel>
 @{
-    ViewData["title"] = "Order List";
+    ViewData["title"] = "History Orders placed by" + "" + ViewBag.UserEmail;
 }
-<h3>List Order</h3>
+<h3>History Orders placed by @ViewBag.UserEmail</h3>
 
 <table class="table" id="myTable">
     <thead>
@@ -16,8 +16,8 @@
             <th scope="col">Order Status</th>
             <th scope="col">Action</th>
 
-            
-            
+
+
 
 
         </tr>
@@ -25,14 +25,14 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr> 
+            <tr>
                 <th>#</th>
                 <th scope="row">@item.OrderCode</th>
                 <th scope="row">@item.ShippingCost.ToString("#,##0 VND")</th>
                 <td>@item.UserName</td>
                 <td>@item.CouponCode</td>
                 <td>@item.CreatedDate</td>
-                
+
 
                 <td>
                     @if (item.Status == 1)
@@ -50,8 +50,10 @@
 
                 </td>
                 <td>
-                    <a asp-action="ViewOrder" class="btn btn-warning btn-sm" asp-controller="Order" asp-route-ordercode="@item.OrderCode">View Order</a>
-                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="Order" asp-route-ordercode="@item.OrderCode">Delete</a>
+                    @if (item.Status != 3)
+                    {
+                    <a asp-action="CancelOrder" class="btn btn-danger btn-sm" asp-controller="Account" asp-route-ordercode="@item.OrderCode">Cancel Order</a>
+                    }
                 </td>
 
             </tr>

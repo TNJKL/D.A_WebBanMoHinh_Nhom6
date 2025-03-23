@@ -128,10 +128,9 @@
                         </div>
                         <div class="mainmenu pull-left">
                             <ul class="nav navbar-nav collapse navbar-collapse">
-                                <li><a asp-area="" asp-controller="Home" class="active">Home</a></li>
-                                
-                                
+                                <li><a asp-area="" asp-controller="Home" class="active">Home</a></li>                                                                
                                 <li><a asp-controller="Product">@ShareLocallizer.GetLocalizedHTML("Products")</a></li>
+                                <li><a asp-controller="Shipping">Shipping</a></li>
                                 <li><a asp-controller="Category">@ShareLocallizer.GetLocalizedHTML("Categories")</a></li>
                                 <li><a asp-controller="Brand">@ShareLocallizer.GetLocalizedHTML("Brands")</a></li>
                                 <li><a asp-controller="Order">@ShareLocallizer.GetLocalizedHTML("Orders")</a></li>
@@ -139,6 +138,8 @@
                                 <li><a asp-controller="Role">@ShareLocallizer.GetLocalizedHTML("Roles")</a></li>
                                 <li><a asp-controller="Slider">Manage Slider</a></li>
                                 <li><a asp-controller="Contact">Contact</a></li>
+                                <li><a asp-controller="Coupon">Coupon</a></li>
+                                
 
                             </ul>
                         </div>

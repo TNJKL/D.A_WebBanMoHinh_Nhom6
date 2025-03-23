@@ -63,11 +63,64 @@
 							</tr>
 						}
 						<tr rowspan="5">
-							<td colspan="6">@ShareLocallizer.GetLocalizedHTML("Grand Total"): <p class="cart_total_price">@Model.GrandTotal.ToString()</p></td>
+							<td rowspan="5">
+								@ShareLocallizer.GetLocalizedHTML("Grand Total:"): <p class="cart_total_price">@Model.GrandTotal.ToString()</p>
+								<form>
+									Coupon Code: <input type="text" class="form-control coupon-value" />
+									<span class="text text-success">@Model.CouponCode</span> <br />
+
+									<input type="button" value="Apply" class="btn btn-sm btn-primary btn-apply-coupon" />
+								</form>
+								@ShareLocallizer.GetLocalizedHTML("Shipping Cost"): <p class="cart_total_price">@Model.ShippingCost.ToString()</p>
+								<p><a asp-action="DeleteShipping" asp-controller ="Cart">Xóa phí ship</a></p>
+							</td>
+
+
+
+							<td>
+								<div class="form-group">
+									<label>Tỉnh thành phố</label>
+									<select class="css_select" id="tinh" name="tinh" title="Chọn Tỉnh Thành">
+										<option value="0">Tỉnh Thành</option>
+									</select>
+								</div>
+
+								<div class="form-group">
+									<label>Quận huyện</label>
+									<select class="css_select" id="quan" name="quan" title="Chọn Quận Huyện">
+										<option value="0">Quận Huyện</option>
+									</select>
+								</div>
+
+								<div class="form-group">
+									<label>Phường xã</label>
+									<select class="css_select" id="phuong" name="phuong" title="Chọn Phường Xã">
+										<option value="0">Phường Xã</option>
+									</select>
+								</div>
+								<button type="button" class="btn btn-primary btn-add-shipping">Tính phí ship</button>
+							</td>
+
+
+
 							<td><a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Clear"> @ShareLocallizer.GetLocalizedHTML("Clear") </a></td>
 							@if (User.Identity?.IsAuthenticated ?? false)
-							{
-								<td><a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout"> @ShareLocallizer.GetLocalizedHTML("Checkout")</a></td>
+							{  
+								<td>
+
+									@if (@Model.ShippingCost <= 0)
+									{
+										<p><span class="text text-danger">Vui lòng nhập thông tin nơi ở để tính phí vận chuyển.</span></p>
+									<td><a disabled="disabled" class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout"> @ShareLocallizer.GetLocalizedHTML("Checkout")</a></td>
+
+
+									}
+									else
+									{
+									<td><a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout"> @ShareLocallizer.GetLocalizedHTML("Checkout")</a></td>
+									}
+								</td>
+								
 							}
 						</tr>
 					}
@@ -85,3 +138,199 @@
 		</div>
 	</div>
 </section> <!--/#cart_items-->
+
+@*@section Scripts {
+
+	<script>
+		$(document).ready(function () {
+			$(".btn-add-shipping").click(function () {
+				var tinh = $("#tinh").find('option:selected').text();
+				var quan = $("#quan").find('option:selected').text();
+				var phuong = $("#phuong").find('option:selected').text();
+
+				// alert(tinh);
+				// alert(quan);
+				// alert(phuong);
+				// alert(price);
+				if (tinh == '' || quan == '' || phuong == '') {
+					Swal.fire("Làm ơn ko bỏ trống.");
+				} else {
+					$.ajax({
+						type: "POST",
+						url: "@Url.Action("GetShipping", "Cart")",
+						data: { tinh: tinh, quan: quan, phuong: phuong}, // Send data to the server
+
+						success: function (result) {
+							// Handle successful update
+							if (result) {
+
+								location.reload();
+
+							}
+						}
+
+					});
+				}
+
+
+			})
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			//Lấy tỉnh thành
+			$.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm',function(data_tinh){
+				if(data_tinh.error==0){
+				   $.each(data_tinh.data, function (key_tinh,val_tinh) {
+					  $("#tinh").append('<option value="'+val_tinh.id+'">'+val_tinh.full_name+'</option>');
+				   });
+				   $("#tinh").change(function(e){
+						var idtinh=$(this).val();
+						//Lấy quận huyện
+						$.getJSON('https://esgoo.net/api-tinhthanh/2/'+idtinh+'.htm',function(data_quan){
+							if(data_quan.error==0){
+							   $("#quan").html('<option value="0">Quận Huyện</option>');
+							   $("#phuong").html('<option value="0">Phường Xã</option>');
+							   $.each(data_quan.data, function (key_quan,val_quan) {
+								  $("#quan").append('<option value="'+val_quan.id+'">'+val_quan.full_name+'</option>');
+							   });
+							   //Lấy phường xã
+							   $("#quan").change(function(e){
+									var idquan=$(this).val();
+									$.getJSON('https://esgoo.net/api-tinhthanh/3/'+idquan+'.htm',function(data_phuong){
+										if(data_phuong.error==0){
+										   $("#phuong").html('<option value="0">Phường Xã</option>');
+										   $.each(data_phuong.data, function (key_phuong,val_phuong) {
+											  $("#phuong").append('<option value="'+val_phuong.id+'">'+val_phuong.full_name+'</option>');
+										   });
+										}
+									});
+							   });
+
+							}
+						});
+				   });
+
+				}
+			});
+		 });
+	</script>
+}
+*@
+@section Scripts {
+	<script>
+		
+		$(".btn-apply-coupon").click(function () {
+			var coupon_value = $(".coupon-value").val();
+			//alert(coupon_value);
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetCoupon", "Cart")",
+				data: { coupon_value: coupon_value },
+				success: function (result) {
+					if (result.success) {
+
+						Swal.fire(result.message);
+						location.reload();
+					} else {
+
+						Swal.fire(result.message);
+					}
+				}
+
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function () {
+			$(".btn-add-shipping").click(function () {
+				var tinh = $("#tinh").find('option:selected').text();
+				var quan = $("#quan").find('option:selected').text();
+				var phuong = $("#phuong").find('option:selected').text();
+
+				// alert(tinh);
+				// alert(quan);
+				// alert(phuong);
+				// alert(price);
+				if (tinh == '' || quan == '' || phuong == '') {
+					Swal.fire("Làm ơn ko bỏ trống.");
+				} else {
+					$.ajax({
+						type: "POST",
+						url: "@Url.Action("GetShipping", "Cart")",
+						data: { tinh: tinh, quan: quan, phuong: phuong}, // Send data to the server
+
+						success: function (result) {
+							// Handle successful update
+							if (result) {
+
+								location.reload();
+
+							}
+						}
+
+					});
+				}
+
+
+			})
+			//delete shipping cost
+			$(".btn-delete-shipping").click(function () {
+				$.ajax({
+					type: "POST",
+					url: "@Url.Action("RemoveShippingCookie", "Cart")", // Replace with your controller and action name
+					success: function (result) {
+						if (result.success) {
+							// Handle successful removal (e.g., update UI or redirect)
+							Swal.fire("Xóa thành công.");
+							location.reload();
+						} else {
+							// Handle error (optional)
+							Swal.fire("Xóa thất bại.");
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						// Handle AJAX errors (optional)
+						console.error("Error removing cookie:", errorThrown);
+					}
+				});
+			});
+			//Lấy tỉnh thành
+			$.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+				if (data_tinh.error == 0) {
+					$.each(data_tinh.data, function (key_tinh, val_tinh) {
+						$("#tinh").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
+					});
+					$("#tinh").change(function (e) {
+						var idtinh = $(this).val();
+						//Lấy quận huyện
+						$.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
+							if (data_quan.error == 0) {
+								$("#quan").html('<option value="0">Quận Huyện</option>');
+								$("#phuong").html('<option value="0">Phường Xã</option>');
+								$.each(data_quan.data, function (key_quan, val_quan) {
+									$("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+								});
+								//Lấy phường xã
+								$("#quan").change(function (e) {
+									var idquan = $(this).val();
+									$.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
+										if (data_phuong.error == 0) {
+											$("#phuong").html('<option value="0">Phường Xã</option>');
+											$.each(data_phuong.data, function (key_phuong, val_phuong) {
+												$("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+											});
+										}
+									});
+								});
+
+							}
+						}); //end $.getJson
+
+					});
+
+				}
+			});
+		});
+	</script>
+}

@@ -12,7 +12,7 @@
 			<div class="col-sm-5">
 				<div class="view-product">
 					<img src="~/media/products/@Model.ProductDetails.Image" alt="" />
-					
+
 					<h3>ZOOM</h3>
 				</div>
 				<div id="similar-product" class="carousel slide" data-ride="carousel">
@@ -24,7 +24,7 @@
 							<a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
 							<a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
 						</div>
-						
+
 
 					</div>
 
@@ -41,18 +41,28 @@
 			<div class="col-sm-7">
 				<div class="product-information">
 					<!--/product-information-->
-					
+
 					<h2>@Model.ProductDetails.Name</h2>
-					
-					
+
+
 					<span>
 						<span>@Model.ProductDetails.Price.ToString("#,##0 VND")</span>
 						<label>Quantity: 1</label>
 						<input type="text" value="3" />
-						<button type="button" class="btn btn-fefault cart">
-							<i class="fa fa-shopping-cart"></i>
-							Add to cart
-						</button>
+						@if (@Model.ProductDetails.Quantity > 0)
+						{
+							<button type="button" class="btn btn-fefault cart">
+								<i class="fa fa-shopping-cart"></i>
+								Add to cart
+							</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-fefault">
+								<i class="fa fa-shopping-cart"></i>
+								Sold out
+							</button>
+						}
 					</span>
 					<p><b>Availability:</b> In Stock</p>
 					<p><b>Condition:</b> New</p>
